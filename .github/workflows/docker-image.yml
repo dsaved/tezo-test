@@ -1,0 +1,17 @@
+name: TEZOS TEST APPLICATION
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: build and push docker images
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "dsaved" --password-stdin
+          docker build -t dsaved/tezos-test:latest .
+          docker push dsaved/tezos-test:latest
+          
