@@ -9,7 +9,7 @@ export class FeesController {
   @Get('/fees/latest')
   async getFeeByLatestBlock() {
     const result = {
-      block: 'No block hash',
+      block: 'No block hash found',
       min: 0,
       max: 0,
       average: 0,
