@@ -12,6 +12,6 @@ COPY . .
 # build the nest application
 RUN npm run build
 # Bind the port that the image will run on
-EXPOSE 8100
+EXPOSE 3001
 # Define the Docker image's behavior at runtime
 CMD ["npm","run", "start:prod"]
