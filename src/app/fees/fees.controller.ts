@@ -31,7 +31,6 @@ export class FeesController {
 
       //convert the array of strings to array of numbers
       const fees = _fees.map((fee) => Number(fee));
-      console.log(fees);
 
       const [average, median, min, max] = this.computeResult(fees);
       result.average = average;
@@ -60,7 +59,6 @@ export class FeesController {
 
     //convert the array of strings to array of numbers
     const fees = _fees.map((fee) => Number(fee));
-    console.log(fees);
 
     const [average, median, min, max] = this.computeResult(fees);
     result.average = average;
