@@ -20,8 +20,6 @@ export class FeesController {
     const block: string = await this.feesService
       .getLatestBlock()
       .catch((error) => this.logger.error(error)) as string;
-    
-    console.log(block);
 
     if (block) {
       // get the transactions fees of the block
