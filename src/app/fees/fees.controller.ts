@@ -1,4 +1,5 @@
 import { Controller, Get, Logger, Param } from '@nestjs/common';
+import { computeResult } from 'src/helpers/functions.helper';
 import { FeesService } from './fees.service';
 
 @Controller()
@@ -8,7 +9,7 @@ export class FeesController {
 
   @Get('/fees/latest')
   async getFeeByLatestBlock() {
-    const result = {
+    let result = {
       block: 'No block hash found',
       min: 0,
       max: 0,
@@ -16,27 +17,24 @@ export class FeesController {
       median: 0,
     };
 
-    const block = await this.feesService
+    const block: string = await this.feesService
       .getLatestBlock()
-      .catch((error) => this.logger.error(error));
+      .catch((error) => this.logger.error(error)) as string;
+    
+    console.log(block);
 
     if (block) {
-      result.block = block as string;
-
       // get the transactions fees of the block
       // the returned value is an array of string
       const _fees = (await this.feesService
-        .getTransactionFeesByHash(result.block)
+        .getTransactionFeesByHash(block)
         .catch((error) => this.logger.error(error))) as string[];
 
       //convert the array of strings to array of numbers
       const fees = _fees.map((fee) => Number(fee));
 
-      const [average, median, min, max] = this.computeResult(fees);
-      result.average = average;
-      result.median = median;
-      result.min = min;
-      result.max = max;
+      result = computeResult(fees) as any;
+      result.block = block as string;
     }
 
     return result;
@@ -44,13 +42,6 @@ export class FeesController {
 
   @Get('/fees/:block_number')
   async getFeesByBlock(@Param('block_number') block_number: string) {
-    const result = {
-      min: 0,
-      max: 0,
-      average: 0,
-      median: 0,
-    };
-
     // get the transactions fees of the block
     // the returned value is an array of string
     const _fees = (await this.feesService
@@ -59,41 +50,6 @@ export class FeesController {
 
     //convert the array of strings to array of numbers
     const fees = _fees.map((fee) => Number(fee));
-
-    const [average, median, min, max] = this.computeResult(fees);
-    result.average = average;
-    result.median = median;
-    result.min = min;
-    result.max = max;
-
-    return result;
-  }
-
-  private computeResult(fees: number[]) {
-    // comput average result
-    const average = fees.reduce((a, b) => a + b, 0) / fees.length;
-
-    // comput median result
-    const median = this.median(fees);
-
-    // comput max result
-    const max = Math.max(...fees);
-
-    // comput min result
-    const min = Math.min(...fees);
-
-    return [average, median, min, max];
-  }
-
-
-  // get median of array of numbers
-  private median(fees: number[]) {
-    fees.sort(function (a, b) {
-      return a - b;
-    });
-    var half = Math.floor(fees.length / 2);
-
-    if (fees.length % 2) return fees[half];
-    else return (fees[half - 1] + fees[half]) / 2.0;
+    return computeResult(fees);
   }
 }

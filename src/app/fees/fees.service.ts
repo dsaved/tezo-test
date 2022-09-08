@@ -7,7 +7,7 @@ export class FeesService {
     return new Promise((resolve, reject) => {
       axios
         .get('https://tez.nodes.ejaraapis.xyz/chains/main/blocks/')
-        .then((response) => resolve(response.data[0][0]))
+        .then((response) => resolve(response.data[0][0] as string))
         .catch((err) => reject(err));
     });
   }
