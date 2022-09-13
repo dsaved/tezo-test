@@ -6,7 +6,7 @@ export class HomeController {
   constructor(private readonly homeService: HomeService) {}
 
   @Get()
-  getQuote(): string {
+  getQuote(): any {
     return this.homeService.getQuote();
   }
 }
